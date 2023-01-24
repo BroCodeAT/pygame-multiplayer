@@ -68,13 +68,15 @@ class NetworkServerBase:
         while len(self.clients) < amount:
             self.clients.append(_ClientBase.from_accept(*self.conn.accept()))
 
-    def _recv(self, size: int) -> bytes:
+    def _recv(self, size: int, client: _ClientBase) -> bytes:
         """Wrapper of the socket.recv() method including a check if the socket is binded to a host and port
 
         Parameters
         ----------
         size : int
             The amount of bytes to receive
+        client : ClientBase
+            The client to receive the data from
 
         Returns
         -------
@@ -88,7 +90,9 @@ class NetworkServerBase:
         """
         if not self.is_binded():
             raise ConnectionError("Not binded to any addr")
-        return self.conn.recv(size)
+        if client not in self.clients:
+            raise ConnectionError("Client not connected")
+        return client.conn.recv(size)
 
     def _send(self, data: bytes, client: _ClientBase) -> None:
         """Wrapper of the socket.send() method including a check if the socket is binded to a host and port
@@ -97,6 +101,8 @@ class NetworkServerBase:
         ----------
         data : bytes
             The data to send to the client
+        client : ClientBase
+            The client to send the data to
 
         Raises
         ------
@@ -105,8 +111,9 @@ class NetworkServerBase:
         """
         if not self.is_binded():
             raise ConnectionError("Not binded to any addr")
-        if client in self.clients:
-            client.conn.send(data)
+        if client not in self.clients:
+            raise ConnectionError("Client not connected")
+        client.conn.send(data)
 
     def is_binded(self) -> bool:
         """Check if the socket is binded to a host and port
