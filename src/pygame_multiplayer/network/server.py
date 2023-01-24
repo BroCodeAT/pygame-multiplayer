@@ -90,7 +90,7 @@ class NetworkServerBase:
             raise ConnectionError("Not binded to any addr")
         return self.conn.recv(size)
 
-    def _send(self, data: bytes) -> None:
+    def _send(self, data: bytes, client: _ClientBase) -> None:
         """Wrapper of the socket.send() method including a check if the socket is binded to a host and port
 
         Parameters
@@ -105,7 +105,8 @@ class NetworkServerBase:
         """
         if not self.is_binded():
             raise ConnectionError("Not binded to any addr")
-        self.conn.send(data)
+        if client in self.clients:
+            client.conn.send(data)
 
     def is_binded(self) -> bool:
         """Check if the socket is binded to a host and port
