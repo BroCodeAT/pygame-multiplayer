@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "pygame-multiplayer"
+version = "0.1.0"
+description = ""
+authors = ["dpfurners <dpfurner@tsn.at>"]
+readme = "README.md"
+packages = [{include = "pygame_multiplayer", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pygame = "^2.1.2"
+pytest = "^7.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
