@@ -11,3 +11,7 @@ class ClientBase:
     @classmethod
     def from_accept(cls, socket: _sock.socket, addr: tuple[str, int]):
         return cls(socket, addr[0], addr[1])
+
+
+class NamedClient(ClientBase):
+    name: str
