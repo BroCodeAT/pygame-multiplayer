@@ -96,3 +96,39 @@ class NetworkClientBase:
             True if the socket is connected to a host and port, False if not
         """
         return self._connected
+
+
+class NetworkClient(NetworkClientBase):
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initializes all the variables in the class and prepares them for use.
+
+        The difference between this class and the NetworkClientBase class is that this class
+        first sends the size of the data to the server before sending the data itself.
+        """
+        super().__init__(*args, **kwargs)
+
+    def send(self, data: bytes):
+        """Send data to the server
+
+        Parameters
+        ----------
+        data : bytes
+            The data to send to the server
+        """
+        length = len(data)
+        self._send(length.to_bytes(8, "big"))
+        if int.from_bytes(self._recv(8), "big") == length:
+            self._send(data)
+
+    def recv(self) -> bytes:
+        """Receive data from the server
+
+        Returns
+        -------
+        bytes
+            The received bytes
+        """
+        length = self._recv(8)
+        self._send(length.to_bytes(8, "big"))
+        return self._recv(size)

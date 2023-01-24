@@ -124,3 +124,61 @@ class NetworkServerBase:
             True if the socket is binded to a host and port, False if not
         """
         return self._binded
+
+
+class NetworkServer(NetworkServerBase):
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initializes all the variables in the class and prepares them for use.
+
+        The difference between this class and the NetworkServerBase class is that this class
+        automatically sends the length of the data to the client and then sends the data
+        """
+        super().__init__(*args, **kwargs)
+
+    def accept(self, amount: int = 1) -> None:
+        """Accept a client
+
+        Parameters
+        ----------
+        amount : int, by default 1
+            The amount of clients to accept
+        """
+        self._accept(amount)
+
+    def send(self, data: bytes, client: _ClientBase) -> None:
+        """Send data to a specific client
+
+        Parameters
+        ----------
+        data : bytes
+            The data to send to the client
+        client : ClientBase
+            The client to send the data to
+        """
+        if client not in self.clients:
+            raise ConnectionError("Client not connected")
+        length = len(data)
+        self._send(length.to_bytes(8, "big"), client)
+        if int.from_bytes(self._recv(8, client), "big") == length:
+            self._send(data, client)
+
+    def recv(self, client: _ClientBase) -> bytes:
+        """Receive data from a specific client
+
+        Parameters
+        ----------
+        client : ClientBase
+            The client to receive the data from
+
+        Returns
+        -------
+        bytes
+            The received bytes
+        """
+        if client not in self.clients:
+            raise ConnectionError("Client not connected")
+
+        length = self._recv(8, client)
+        self._send(length.to_bytes(8, "big"), client)
+        return self._recv(size, client)

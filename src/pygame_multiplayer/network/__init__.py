@@ -1,7 +1,9 @@
-from .client import NetworkClientBase
-from .server import NetworkServerBase
+from .client import NetworkClientBase, NetworkClient
+from .server import NetworkServerBase, NetworkServer
 
 __all__ = [
     "NetworkClientBase",
-    "NetworkServerBase"
+    "NetworkClient",
+    "NetworkServerBase",
+    "NetworkServer"
 ]
