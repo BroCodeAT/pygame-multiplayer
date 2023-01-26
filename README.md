@@ -1,5 +1,7 @@
 # Pygame-Multiplayer
 
+[![Python Tests](https://github.com/BroCodeAT/pygame-multiplayer/actions/workflows/python-app.yml/badge.svg)](https://github.com/BroCodeAT/pygame-multiplayer/actions/workflows/python-app.yml)
+
 Framework for multiplayer games using pygame and python.
 
 ---
