@@ -131,6 +131,6 @@ class NetworkClient(NetworkClientBase):
         bytes
             The received bytes
         """
-        length = self._recv(8)
+        length = int.from_bytes(self._recv(8), "big")
         self._send(length.to_bytes(8, "big"))
-        return self._recv(size).encode(self.ENCODING)
+        return self._recv(length).encode(self.ENCODING)

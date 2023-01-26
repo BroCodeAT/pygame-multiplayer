@@ -181,6 +181,6 @@ class NetworkServer(NetworkServerBase):
         if client not in self.clients:
             raise ConnectionError("Client not connected")
 
-        length = self._recv(8, client)
+        length = int.from_bytes(self._recv(8, client), "big")
         self._send(length.to_bytes(8, "big"), client)
         return self._recv(size, client).decode(self.ENCODING)
