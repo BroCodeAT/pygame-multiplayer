@@ -20,8 +20,7 @@ Framework for multiplayer games using pygame and python.
 ---
 
 ## Planned features
-- [x] Command based Network
-- [ ] Threaded Network
+- [x] Command based Network ([py-mp](https://github.com/BroCodeAT/python-multiplayer))
 - [ ] Lobby System
 - [ ] Component Library
 - [ ] Screen Builder
