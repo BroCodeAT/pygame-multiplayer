@@ -106,9 +106,10 @@ class NetworkClient(NetworkClientBase):
         The difference between this class and the NetworkClientBase class is that this class
         first sends the size of the data to the server before sending the data itself.
         """
+        self.ENCODING: str = "utf-8"
         super().__init__(*args, **kwargs)
 
-    def send(self, data: bytes):
+    def send(self, data: str):
         """Send data to the server
 
         Parameters
@@ -116,12 +117,13 @@ class NetworkClient(NetworkClientBase):
         data : bytes
             The data to send to the server
         """
+        data = data.encode(self.ENCODING)
         length = len(data)
         self._send(length.to_bytes(8, "big"))
         if int.from_bytes(self._recv(8), "big") == length:
             self._send(data)
 
-    def recv(self) -> bytes:
+    def recv(self) -> str:
         """Receive data from the server
 
         Returns
@@ -131,4 +133,4 @@ class NetworkClient(NetworkClientBase):
         """
         length = self._recv(8)
         self._send(length.to_bytes(8, "big"))
-        return self._recv(size)
+        return self._recv(size).encode(self.ENCODING)

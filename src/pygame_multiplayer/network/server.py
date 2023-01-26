@@ -134,6 +134,7 @@ class NetworkServer(NetworkServerBase):
         The difference between this class and the NetworkServerBase class is that this class
         automatically sends the length of the data to the client and then sends the data
         """
+        self.ENCODING: str = "utf-8"
         super().__init__(*args, **kwargs)
 
     def accept(self, amount: int = 1) -> None:
@@ -146,7 +147,7 @@ class NetworkServer(NetworkServerBase):
         """
         self._accept(amount)
 
-    def send(self, data: bytes, client: _ClientBase) -> None:
+    def send(self, data: str, client: _ClientBase) -> None:
         """Send data to a specific client
 
         Parameters
@@ -158,12 +159,13 @@ class NetworkServer(NetworkServerBase):
         """
         if client not in self.clients:
             raise ConnectionError("Client not connected")
+        data = data.encode(self.ENCODING)
         length = len(data)
         self._send(length.to_bytes(8, "big"), client)
         if int.from_bytes(self._recv(8, client), "big") == length:
             self._send(data, client)
 
-    def recv(self, client: _ClientBase) -> bytes:
+    def recv(self, client: _ClientBase) -> str:
         """Receive data from a specific client
 
         Parameters
@@ -181,4 +183,4 @@ class NetworkServer(NetworkServerBase):
 
         length = self._recv(8, client)
         self._send(length.to_bytes(8, "big"), client)
-        return self._recv(size, client)
+        return self._recv(size, client).decode(self.ENCODING)
