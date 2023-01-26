@@ -1,4 +1,4 @@
-from src.python import __version__
+from src.pygame_multiplayer import __version__
 
 
 def test_version():
