@@ -1,4 +1,14 @@
+from enum import IntFlag as _IntFlag
 
-# Network Flags
-NEW_CONNECTION = 1
-DISCONNECT = 0
+
+class CommandFlag(_IntFlag):
+    pass
+
+
+class NetworkFlag(CommandFlag):
+    """
+    Flags for the Network Commands
+    Reserved Flags: 100 - 199
+    """
+    DISCONNECTED = 100
+    CONNECTED = 101

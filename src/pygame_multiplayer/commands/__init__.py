@@ -1,5 +1,5 @@
 from .commands import BaseCommand, ClientCommand, ServerCommand, ServerSideClientCommand, ServerSideServerCommand
-from .flags import *
+from .flags import CommandFlag, NetworkFlag
 
 __all__ = [
     "BaseCommand",
@@ -7,6 +7,6 @@ __all__ = [
     "ServerCommand",
     "ServerSideClientCommand",
     "ServerSideServerCommand",
-    "DISCONNECT",
-    "NEW_CONNECTION",
+    "CommandFlag",
+    "NetworkFlag",
 ]

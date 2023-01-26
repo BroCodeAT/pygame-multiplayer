@@ -1,13 +1,11 @@
 import json
 
-from typing import Any as _Any
-from dataclasses import dataclass as _dc, field as _field
-
 from pygame_multiplayer.models import ClientBase as _ClientBase
+from pygame_multiplayer.commands.flags import CommandFlag as _CommandFlag, NetworkFlag as _NetworkFlag
 
 
 class BaseCommand:
-    def __init__(self, flag: int, **kwargs):
+    def __init__(self, flag: _CommandFlag, **kwargs):
         """
         Initializes all the variables in the class and prepares them for use.
 
@@ -24,7 +22,7 @@ class BaseCommand:
         self.args = kwargs
 
     def __repr__(self):
-        return f"<BaseCommand [{self.flag}] args: {', '.join(self.args.keys())})>"
+        return f"<BaseCommand [{self.flag.name}] args: {', '.join(self.args.keys())})>"
 
     def serialize(self) -> str:
         """
@@ -35,7 +33,7 @@ class BaseCommand:
         str
             The serialized command
         """
-        return json.dumps(self.__dict__)
+        return json.dumps({"flag": self.flag.value, "args": self.args})
 
     @classmethod
     def deserialize(cls, serial: str) -> "BaseCommand":
@@ -53,7 +51,11 @@ class BaseCommand:
             The deserialized command
         """
         data = json.loads(serial)
-        return cls(data.get("flag"), **data.get("args", {}))
+        if _NetworkFlag(data.get("flag")) in _NetworkFlag:
+            flg = _NetworkFlag(data.get("flag"))
+        else:
+            flg = _CommandFlag(data.get("flag"))
+        return cls(flg, **data.get("args", {}))
 
 
 class ClientCommand(BaseCommand):
@@ -63,7 +65,7 @@ class ClientCommand(BaseCommand):
     Instance that reprs a command that is sent from the client to the server
     """
     def __repr__(self):
-        return f"<ClientCommand [{self.flag}] args: {', ', join(self.args.keys())})>"
+        return f"<ClientCommand [{self.flag.name}] args: {', ', join(self.args.keys())})>"
 
 
 class ServerCommand(BaseCommand):
@@ -73,7 +75,7 @@ class ServerCommand(BaseCommand):
     Instance that reprs a command that is sent from the server to the client
     """
     def __repr__(self):
-        return f"<ServerCommand [{self.flag}] args: {', ', join(self.args.keys())})>"
+        return f"<ServerCommand [{self.flag.name}] args: {', ', join(self.args.keys())})>"
 
 
 class ServerSideClientCommand(BaseCommand):
@@ -97,7 +99,7 @@ class ServerSideClientCommand(BaseCommand):
         self.client: _ClientBase = client
 
     def __repr__(self):
-        return f"<ServerSideClientCommand [{self.flag}] args: {', '.join(self.args.keys())})>"
+        return f"<ServerSideClientCommand [{self.flag.name}] args: {', '.join(self.args.keys())})>"
 
     @classmethod
     def from_client_cmd(cls, cmd: BaseCommand, client: _ClientBase) -> "ServerSideClientCommand":
@@ -140,7 +142,7 @@ class ServerSideServerCommand(BaseCommand):
         self.client: _ClientBase = client
 
     def __repr__(self):
-        return f"<ServerSideServerCommand [{self.flag}] args: {', ',join(self.args.keys())})>"
+        return f"<ServerSideServerCommand [{self.flag.name}] args: {', ',join(self.args.keys())})>"
 
     def to_client_cmd(self) -> ServerCommand:
         """
