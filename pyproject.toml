@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "pygame-multiplayer"
 version = "0.1.0"
-description = ""
-authors = ["dpfurners <dpfurner@tsn.at>"]
+description = "Pygame Framework for Multiplayer Games"
+authors = [
+    "dpfurners <dpfurner@tsn.at>",
+    "kloaChristoph <christoph.alexander.holas@gmail.com>"
+]
 readme = "README.md"
 packages = [{include = "pygame_multiplayer", from = "src"}]
 
