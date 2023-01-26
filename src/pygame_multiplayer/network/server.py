@@ -166,6 +166,30 @@ class NetworkServer(NetworkServerBase):
         if int.from_bytes(self._recv(8, client), "big") == length:
             self._send(data, client)
 
+    def send_to(self, data: str, *clients: _ClientBase) -> None:
+        """Send data to several clients
+
+        Parameters
+        ----------
+        data : str
+            The data to send to the client
+        clients : list[ClientBase]
+            The clients to send the data to
+        """
+        for client in clients:
+            self.send(data, client)
+
+    def send_all(self, data: str) -> None:
+        """Send data to all clients
+
+        Parameters
+        ----------
+        data : str
+            The data to send to the client
+        """
+        for client in self.clients:
+            self.send(data, client)
+
     def recv(self, client: _ClientBase) -> str:
         """Receive data from a specific client
 
@@ -210,6 +234,31 @@ class CommandServer(NetworkServer):
         if isinstance(command, _ServerSideServerCommand):
             command = command.to_client_cmd()
         super().send(command.serialize(), client)
+
+    def send_to(self, command: _ServerCommand | _ServerSideServerCommand, *clients: _ClientBase) -> None:
+        """Send data to several clients
+
+        Parameters
+        ----------
+        command : ServerCommand | ServerSideServerCommand
+            The data to send to the client
+        clients : list[ClientBase]
+            The clients to send the data to
+        """
+        for client in clients:
+            self.send(command, client)
+
+    def send_all(self, command: _ServerCommand | _ServerSideServerCommand) -> None:
+        """Send data to all clients
+
+        Parameters
+        ----------
+        command : ClientCommand | ServerCommand
+            The command to send to the server
+        """
+        if isinstance(command, _ServerSideServerCommand):
+            command = command.to_client_cmd()
+        super().send_all(command.serialize())
 
     def recv(self, client: _ClientBase) -> _ServerSideClientCommand:
         """Receive data from the server
