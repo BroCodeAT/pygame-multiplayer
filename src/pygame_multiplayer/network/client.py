@@ -1,4 +1,5 @@
 import socket as _sock
+from pygame_multiplayer.commands import ClientCommand as _ClientCommand, ServerCommand as _ServerCommand, BaseCommand as _BaseCommand
 
 
 class NetworkClientBase:
@@ -128,9 +129,40 @@ class NetworkClient(NetworkClientBase):
 
         Returns
         -------
-        bytes
-            The received bytes
+        str
+            The received data
         """
         length = int.from_bytes(self._recv(8), "big")
         self._send(length.to_bytes(8, "big"))
-        return self._recv(length).encode(self.ENCODING)
+        return self._recv(length).decode(self.ENCODING)
+
+
+class CommandClient(NetworkClient):
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initializes all the variables in the class and prepares them for use.
+
+        The difference between this class and the NetworkClient class is that this class
+        sends and receives data as strings instead of bytes.
+        """
+        super().__init__(*args, **kwargs)
+
+    def send(self, command: _ClientCommand | _ServerCommand):
+        """Send data to the server
+
+        Parameters
+        ----------
+        command : ClientCommand | ServerCommand
+            The command to send to the server
+        """
+        super().send(command.serialize())
+
+    def recv(self) -> _BaseCommand:
+        """Receive data from the server
+
+        Returns
+        -------
+        str
+            The received data
+        """
+        return _BaseCommand.deserialize(super().recv())

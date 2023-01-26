@@ -1,5 +1,6 @@
 import socket as _sock
 from ..models import ClientBase as _ClientBase
+from ..commands import ClientCommand as _ClientCommand, ServerCommand as _ServerCommand, BaseCommand as _BaseCommand, ServerSideClientCommand as _ServerSideClientCommand, ServerSideServerCommand as _ServerSideServerCommand
 
 
 class NetworkServerBase:
@@ -175,8 +176,8 @@ class NetworkServer(NetworkServerBase):
 
         Returns
         -------
-        bytes
-            The received bytes
+        str
+            The received data
         """
         if client not in self.clients:
             raise ConnectionError("Client not connected")
@@ -184,3 +185,43 @@ class NetworkServer(NetworkServerBase):
         length = int.from_bytes(self._recv(8, client), "big")
         self._send(length.to_bytes(8, "big"), client)
         return self._recv(length, client).decode(self.ENCODING)
+
+
+class CommandServer(NetworkServer):
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initializes all the variables in the class and prepares them for use.
+
+        The difference between this class and the NetworkClient class is that this class
+        sends and receives data as strings instead of bytes.
+        """
+        super().__init__(*args, **kwargs)
+
+    def send(self, command: _ServerCommand | _ServerSideServerCommand, client: _ClientBase) -> None:
+        """Send data to the server
+
+        Parameters
+        ----------
+        command : ClientCommand | ServerCommand
+            The command to send to the server
+        client : ClientBase
+            The client to send the data to
+        """
+        if isinstance(command, _ServerSideServerCommand):
+            command = command.to_client_cmd()
+        super().send(command.serialize(), client)
+
+    def recv(self, client: _ClientBase) -> _ServerSideClientCommand:
+        """Receive data from the server
+
+        Parameters
+        ----------
+        client : ClientBase
+            The client to receive the data from
+
+        Returns
+        -------
+        str
+            The received data
+        """
+        return _ServerSideClientCommand.from_client_cmd(_BaseCommand.deserialize(super().recv(client)), client)

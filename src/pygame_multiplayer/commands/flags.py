@@ -1,0 +1,4 @@
+
+# Network Flags
+NEW_CONNECTION = 1
+DISCONNECT = 0
