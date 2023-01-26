@@ -65,7 +65,7 @@ class ClientCommand(BaseCommand):
     Instance that reprs a command that is sent from the client to the server
     """
     def __repr__(self):
-        return f"<ClientCommand [{self.flag.name}] args: {', ', join(self.args.keys())})>"
+        return f"<ClientCommand [{self.flag.name}] args: {', '.join(self.args.keys())})>"
 
 
 class ServerCommand(BaseCommand):
@@ -75,7 +75,7 @@ class ServerCommand(BaseCommand):
     Instance that reprs a command that is sent from the server to the client
     """
     def __repr__(self):
-        return f"<ServerCommand [{self.flag.name}] args: {', ', join(self.args.keys())})>"
+        return f"<ServerCommand [{self.flag.name}] args: {', '.join(self.args.keys())})>"
 
 
 class ServerSideClientCommand(BaseCommand):
@@ -142,7 +142,7 @@ class ServerSideServerCommand(BaseCommand):
         self.client: _ClientBase = client
 
     def __repr__(self):
-        return f"<ServerSideServerCommand [{self.flag.name}] args: {', ',join(self.args.keys())})>"
+        return f"<ServerSideServerCommand [{self.flag.name}] args: {', '.join(self.args.keys())})>"
 
     def to_client_cmd(self) -> ServerCommand:
         """
