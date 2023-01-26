@@ -20,7 +20,8 @@ Framework for multiplayer games using pygame and python.
 ---
 
 ## Planned features
-- [ ] Command based Network
+- [x] Command based Network
+- [ ] Threaded Network
 - [ ] Lobby System
 - [ ] Component Library
 - [ ] Screen Builder

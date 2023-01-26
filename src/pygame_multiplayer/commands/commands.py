@@ -79,7 +79,7 @@ class ServerCommand(BaseCommand):
 
 
 class ServerSideClientCommand(BaseCommand):
-    def __init__(self, flag: int, client: _ClientBase, **kwargs):
+    def __init__(self, flag: _CommandFlag, client: _ClientBase, **kwargs):
         """
         Initializes all the variables in the class and prepares them for use.
 
@@ -88,7 +88,7 @@ class ServerSideClientCommand(BaseCommand):
 
         Parameters
         ----------
-        flag : int
+        flag : CommandFlag
             The flag for the command
         client : ClientBase
             The client that sent the command
@@ -122,7 +122,7 @@ class ServerSideClientCommand(BaseCommand):
 
 
 class ServerSideServerCommand(BaseCommand):
-    def __init__(self, flag: int, client: _ClientBase, **kwargs):
+    def __init__(self, flag: _CommandFlag, client: _ClientBase, **kwargs):
         """
         Initializes all the variables in the class and prepares them for use.
 
@@ -131,7 +131,7 @@ class ServerSideServerCommand(BaseCommand):
 
         Parameters
         ----------
-        flag: int
+        flag: CommandFlag
             The flag of the command
         client: ClientBase
             The client that the command is being sent to
