@@ -1,4 +1,4 @@
-from pygame_multiplayer.commands.flags import NetworkFlag
+from src.pygame_multiplayer.commands.flags import NetworkFlag
 
 
 def test_network_flags():
