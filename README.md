@@ -15,7 +15,6 @@ Framework for multiplayer games using pygame and python.
      - Easy to use
      - Easy to build your own game on top of it
      - Extensions to add more features
-     - Don't spend time planning the network architecture
 
 ---
 
